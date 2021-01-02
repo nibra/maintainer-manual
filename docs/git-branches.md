@@ -34,21 +34,21 @@ The main branch will only undergo minor fixes and some polishing before the rele
 
 ## Supporting Branches
 
+Partial developments such as new features, bug fixes or refactoring are typically kept in separate branches in the developer repositories without corresponding branches in the central repository. They are moved to the central repository with pull requests.
+
 ### Feature Branches
 
 Feature branches (or sometimes called topic branches) are used to develop new features for the next or a later release.
 When development of a feature begins, it may well be that the target version into which that feature will be incorporated is unknown at that time.
 A feature branch exists as long as the feature is in development until it is eventually merged with the appropriate release branch or discarded (in the case of a disappointing experiment).
 
-Feature branches typically exist only in developer repositories, not in the central repository.
-
 #### Creating a feature branch
 
 To start working on a new feature, create a new branch from the release branch that will receive the new feature.
 
 ```bash
-$ git checkout -b myfeature x.y-dev
-Switched to a new branch "myfeature"
+$ git checkout -b my-feature x.y-dev
+Switched to a new branch "my-feature"
 ```
 
 #### Incorporating a finished feature on `master` / `x.y-dev`
@@ -58,13 +58,29 @@ Finished features may be merged into the develop branch to definitely add them t
 ```bash
 $ git checkout x.y-dev
 Switched to branch 'x.y-dev'
-$ git merge --no-ff myfeature
+$ git merge --no-ff my-feature
 Updating ea1b82a..05e9557
 (Summary of changes)
-$ git branch -d myfeature
-Deleted branch myfeature (was 05e9557).
+$ git branch -d my-feature
+Deleted branch my-feature (was 05e9557).
 $ git push origin x.y-dev
 ```
 
 The `--no-ff` flag causes the merge to always create a new commit object, even if the merge could be performed with a fast-forward.
 This avoids losing information about the historical existence of a feature branch and groups together all commits that together added the feature.
+
+If a function has been merged into a release or main branch, it must be merged up into existing follow-on versions.
+
+```bash
+$ git checkout x.y+1-dev
+Switched to branch 'x.y+1-dev'
+$ git merge --no-ff x.y-dev
+Updating ea1b82a..05e9557
+(Summary of changes)
+$ git checkout x+1.0-dev
+Switched to branch 'x+1.0-dev'
+$ git merge --no-ff x.y-dev
+Updating ea1b82a..05e9557
+(Summary of changes)
+```
+@todo check if merge command is right in this context
